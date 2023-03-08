@@ -1,0 +1,15 @@
+[package]
+name = "tamagotchi"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tamagotchi-io = { path = "./io" }
+gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], branch = "testnet" }
+
+[dev-dependencies]
+gtest = { git = "https://github.com/gear-tech/gear.git", branch = "testnet" }
+
+[build-dependencies]
+tamagotchi-io = { path = "./io" }
+gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", branch = "testnet"}
