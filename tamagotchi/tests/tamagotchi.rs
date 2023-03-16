@@ -28,6 +28,9 @@ fn tamagotchi_initializes() {
     assert!(
         timestamp_before <= tamagotchi.date_of_birth && tamagotchi.date_of_birth <= timestamp_after
     );
+    assert!(9500 < tamagotchi.fed);
+    assert!(9500 < tamagotchi.entertained);
+    assert!(9500 < tamagotchi.rested);
 }
 
 #[test]
