@@ -19,7 +19,8 @@ const FILL_PER_ENTERTAINMENT: u64 = 1000;
 const FILL_PER_SLEEP: u64 = 1000;
 
 pub(crate) struct Tamagotchi {
-    owner: ActorId,
+    owner_id: ActorId,
+    transferor_id: Option<ActorId>,
     name: String,
     date_of_birth: u64,
     fed_level: u64,
@@ -31,10 +32,11 @@ pub(crate) struct Tamagotchi {
 }
 
 impl Tamagotchi {
-    pub fn new(owner: ActorId, name: String) -> Self {
+    pub fn new(owner_id: ActorId, name: String) -> Self {
         let current_block = exec::block_height();
         Tamagotchi {
-            owner,
+            owner_id,
+            transferor_id: None,
             name,
             date_of_birth: exec::block_timestamp(),
             fed_level: FED_LEVEL_MAX,
@@ -82,6 +84,21 @@ impl Tamagotchi {
             RESTED_LEVEL_MAX,
         );
         self.rested_block = exec::block_height()
+    }
+
+    pub fn transfer(&mut self, actor_id: ActorId, new_owner_id: ActorId) {
+        assert_eq!(actor_id, self.owner_id);
+        self.owner_id = new_owner_id;
+    }
+
+    pub fn grant_transfer_permission(&mut self, actor_id: ActorId, transferor_id: ActorId) {
+        assert_eq!(actor_id, self.owner_id);
+        self.transferor_id = Some(transferor_id);
+    }
+
+    pub fn revoke_transfer_permission(&mut self, actor_id: ActorId) {
+        assert_eq!(actor_id, self.owner_id);
+        self.transferor_id = None;
     }
 
     fn fed_level_at(&self, block: u32) -> u64 {
@@ -139,13 +156,14 @@ impl From<&Tamagotchi> for tamagotchi_io::Tamagotchi {
         tamagotchi_io::Tamagotchi {
             name: entity.name.clone(),
             date_of_birth: entity.date_of_birth,
-            owner: entity.owner,
+            owner: entity.owner_id,
             fed: entity.fed_level_at(current_block),
             fed_block: entity.fed_block as u64,
             entertained: entity.entertained_level_at(current_block),
             entertained_block: entity.entertained_block as u64,
             rested: entity.rested_level_at(current_block),
             rested_block: entity.rested_block as u64,
+            allowed_account: entity.transferor_id,
         }
     }
 }
