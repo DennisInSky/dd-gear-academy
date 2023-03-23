@@ -50,9 +50,9 @@ fn tamagotchi_replies_with_name() {
         .find(|log_entry| log_entry.destination() == SENDER_ID.into())
         .expect("Unable to get tamagotchi reply");
 
-    let tamagotchi_reply = tamagotchi_io::TmgEvent::decode(&mut log_entry.payload())
+    let tamagotchi_reply = tamagotchi_io::TmgReply::decode(&mut log_entry.payload())
         .expect("Unable to decode tamagotchi reply");
-    if let tamagotchi_io::TmgEvent::Name(tamagotchi_name) = tamagotchi_reply {
+    if let tamagotchi_io::TmgReply::Name(tamagotchi_name) = tamagotchi_reply {
         assert_eq!(TAMAGOTCHI_NAME, tamagotchi_name.as_str());
     } else {
         unreachable!("Unexpected tamagotchi reply {:?}", tamagotchi_reply);
@@ -76,9 +76,9 @@ fn tamagotchi_replies_with_age() {
         .find(|log_entry| log_entry.destination() == SENDER_ID.into())
         .expect("Unable to get tamagotchi reply");
 
-    let tamagotchi_reply = tamagotchi_io::TmgEvent::decode(&mut log_entry.payload())
+    let tamagotchi_reply = tamagotchi_io::TmgReply::decode(&mut log_entry.payload())
         .expect("Unable to decode tamagotchi reply");
-    if let tamagotchi_io::TmgEvent::Age(tamagotchi_age) = tamagotchi_reply {
+    if let tamagotchi_io::TmgReply::Age(tamagotchi_age) = tamagotchi_reply {
         assert!(timestamp_before + tamagotchi_age <= timestamp_after);
     } else {
         unreachable!("Unexpected tamagotchi reply {:?}", tamagotchi_reply);

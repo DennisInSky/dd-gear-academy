@@ -48,6 +48,14 @@ impl Tamagotchi {
         }
     }
 
+    pub fn owner_id(&self) -> ActorId {
+        self.owner_id
+    }
+
+    pub fn transferor_id(&self) -> Option<ActorId> {
+        self.transferor_id
+    }
+
     pub fn name(&self) -> &str {
         self.name.as_str()
     }
@@ -86,18 +94,15 @@ impl Tamagotchi {
         self.rested_block = exec::block_height()
     }
 
-    pub fn transfer(&mut self, actor_id: ActorId, new_owner_id: ActorId) {
-        assert_eq!(actor_id, self.owner_id);
+    pub fn transfer_to(&mut self, new_owner_id: ActorId) {
         self.owner_id = new_owner_id;
     }
 
-    pub fn grant_transfer_permission(&mut self, actor_id: ActorId, transferor_id: ActorId) {
-        assert_eq!(actor_id, self.owner_id);
+    pub fn grant_transfer_permission(&mut self, transferor_id: ActorId) {
         self.transferor_id = Some(transferor_id);
     }
 
-    pub fn revoke_transfer_permission(&mut self, actor_id: ActorId) {
-        assert_eq!(actor_id, self.owner_id);
+    pub fn revoke_transfer_permission(&mut self) {
         self.transferor_id = None;
     }
 
