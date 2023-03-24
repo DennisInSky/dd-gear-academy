@@ -11,13 +11,13 @@ extern "C" fn init() {
     //let name: String = msg::load().expect("Unable to read init message");
     let name_vec = msg::load_bytes().expect("Unable to read init message");
     let name = String::from_utf8(name_vec).expect("Unable to convert init message");
-    unsafe { TAMAGOTCHI = Some(tamagotchi::Tamagotchi::new(name)) }
+    unsafe { TAMAGOTCHI = Some(tamagotchi::Tamagotchi::new(msg::source(), name)) }
 }
 
 #[no_mangle]
 extern "C" fn handle() {
     let action: tamagotchi_io::TmgAction = msg::load().expect("Unable to read action message");
-    let tamagotchi = unsafe { TAMAGOTCHI.as_ref().expect("Tamagotchi is not initialized") };
+    let tamagotchi = unsafe { TAMAGOTCHI.as_mut().expect("Tamagotchi is not initialized") };
     match action {
         tamagotchi_io::TmgAction::Name => {
             msg::reply(tamagotchi_io::TmgEvent::Name(tamagotchi.name().into()), 0)
@@ -26,6 +26,21 @@ extern "C" fn handle() {
         tamagotchi_io::TmgAction::Age => {
             msg::reply(tamagotchi_io::TmgEvent::Age(tamagotchi.age()), 0)
                 .expect("Unable to reply with tamagotchi age");
+        }
+        tamagotchi_io::TmgAction::Feed => {
+            tamagotchi.feed();
+            msg::reply(tamagotchi_io::TmgEvent::Fed, 0)
+                .expect("Unable to reply with tamagochi fed event");
+        }
+        tamagotchi_io::TmgAction::Play => {
+            tamagotchi.play();
+            msg::reply(tamagotchi_io::TmgEvent::Entertained, 0)
+                .expect("Unable to reply with tamagochi entertained event");
+        }
+        tamagotchi_io::TmgAction::Sleep => {
+            tamagotchi.sleep();
+            msg::reply(tamagotchi_io::TmgEvent::Slept, 0)
+                .expect("Unable to reply with tamagochi slept event");
         }
     }
 }
@@ -39,7 +54,7 @@ extern "C" fn state() {
 
 #[no_mangle]
 extern "C" fn metahash() {
-    let metahash = include!("../.metahash");
+    let metahash: [u8; 32] = include!("../.metahash");
     msg::reply(metahash, 0).expect("Unable to reply with metahash");
 }
 
