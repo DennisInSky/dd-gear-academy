@@ -42,6 +42,6 @@ extern "C" fn state() {
 
 #[no_mangle]
 extern "C" fn metahash() {
-    let metahash = include!("../.metahash");
+    let metahash: [u8; 32] = include!("../.metahash");
     gstd::msg::reply(metahash, 0).expect("Unable to reply with metahash");
 }
