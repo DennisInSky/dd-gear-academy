@@ -42,6 +42,21 @@ extern "C" fn handle() {
             msg::reply(tamagotchi_io::TmgEvent::Slept, 0)
                 .expect("Unable to reply with tamagochi slept event");
         }
+        tamagotchi_io::TmgAction::Transfer(actor_id) => {
+            tamagotchi.transfer(msg::source(), actor_id);
+            msg::reply(tamagotchi_io::TmgEvent::Transfer(actor_id), 0)
+                .expect("Unable to reply with tamagochi transferred event");
+        }
+        tamagotchi_io::TmgAction::Approve(transferor_actor_id) => {
+            tamagotchi.grant_transfer_permission(msg::source(), transferor_actor_id);
+            msg::reply(tamagotchi_io::TmgEvent::Approve(transferor_actor_id), 0)
+                .expect("Unable to reply with tamagochi transfer permission granted event");
+        }
+        tamagotchi_io::TmgAction::RevokeApproval => {
+            tamagotchi.revoke_transfer_permission(msg::source());
+            msg::reply(tamagotchi_io::TmgEvent::RevokeApproval, 0)
+                .expect("Unable to reply with tamagochi transfer permission revoked event");
+        }
     }
 }
 
