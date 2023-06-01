@@ -6,6 +6,9 @@ edition = "2021"
 [dependencies]
 tamagotchi-io = { path = "./io" }
 gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], branch = "testnet" }
+ft-main-io = { git = "https://github.com/gear-dapps/sharded-fungible-token.git" } # I think it should be taken from a branch like the above
+ft-logic-io = { git = "https://github.com/gear-dapps/sharded-fungible-token.git" } # Same here
+store-io = { git = "https://github.com/gear-dapps/smart-contract-academy.git" } # And here
 
 [dev-dependencies]
 gtest = { git = "https://github.com/gear-tech/gear.git", branch = "testnet" }

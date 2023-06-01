@@ -280,6 +280,45 @@ dependencies = [
 ]
 
 [[package]]
+name = "ft-logic-io"
+version = "0.1.5"
+source = "git+https://github.com/gear-dapps/sharded-fungible-token.git#163a80e2e0727baec1c8967c5715bb867c0569e9"
+dependencies = [
+ "ft-storage-io",
+ "gmeta",
+ "gstd",
+ "hashbrown 0.13.2",
+ "parity-scale-codec",
+ "primitive-types",
+ "scale-info",
+]
+
+[[package]]
+name = "ft-main-io"
+version = "0.1.5"
+source = "git+https://github.com/gear-dapps/sharded-fungible-token.git#163a80e2e0727baec1c8967c5715bb867c0569e9"
+dependencies = [
+ "ft-logic-io",
+ "gmeta",
+ "gstd",
+ "parity-scale-codec",
+ "primitive-types",
+ "scale-info",
+]
+
+[[package]]
+name = "ft-storage-io"
+version = "0.1.5"
+source = "git+https://github.com/gear-dapps/sharded-fungible-token.git#163a80e2e0727baec1c8967c5715bb867c0569e9"
+dependencies = [
+ "gmeta",
+ "gstd",
+ "parity-scale-codec",
+ "primitive-types",
+ "scale-info",
+]
+
+[[package]]
 name = "funty"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1080,6 +1119,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
+name = "store-io"
+version = "0.1.0"
+source = "git+https://github.com/gear-dapps/smart-contract-academy.git#aba40c81d040995b143e8242694f4d1a8a4ca046"
+dependencies = [
+ "gmeta",
+ "gstd",
+ "parity-scale-codec",
+ "scale-info",
+]
+
+[[package]]
 name = "str-buf"
 version = "2.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1100,9 +1150,12 @@ dependencies = [
 name = "tamagotchi"
 version = "0.1.0"
 dependencies = [
+ "ft-logic-io",
+ "ft-main-io",
  "gear-wasm-builder",
  "gstd",
  "gtest",
+ "store-io",
  "tamagotchi-io",
 ]
 

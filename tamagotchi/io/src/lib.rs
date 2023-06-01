@@ -8,7 +8,7 @@ pub struct ProgramMetadata;
 
 impl Metadata for ProgramMetadata {
     type Init = InOut<String, ()>;
-    type Handle = InOut<TmgAction, TmgEvent>;
+    type Handle = InOut<TmgAction, TmgReply>;
     type Reply = InOut<(), ()>;
     type Others = InOut<(), ()>;
     type Signal = ();
