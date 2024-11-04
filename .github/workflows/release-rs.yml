@@ -6,7 +6,7 @@ on:
 
 jobs:
   j1:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/rs/v')
     runs-on: ubuntu-latest
     defaults:
       run:
