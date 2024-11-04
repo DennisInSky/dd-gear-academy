@@ -18,29 +18,33 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Extract Release Info
-        id: extract_release_version
+        id: release_info
         run: |
           RELEASE_TAG=${GITHUB_REF#refs/tags/}
-          RELEASE_VERSION=${RELEASE_TAG#rs/v}
-          if [[ ! $RELEASE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          VERSION=${RELEASE_TAG#rs/v}
+          if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "'$VERSION' is not a valid semver version"
             exit 1
           fi
+
           # Fetch commit details using the GitHub API
           COMMIT_DETAILS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/$RELEASE_TAG")
           # Extract the author's name and email
-          NAME=$(echo "$COMMIT_DETAILS" | jq -r .commit.author.name)
-          EMAIL=$(echo "$COMMIT_DETAILS" | jq -r .commit.author.email)
+          AUTHOR_NAME=$(echo "$COMMIT_DETAILS" | jq -r .commit.author.name)
+          AUTHOR_EMAIL=$(echo "$COMMIT_DETAILS" | jq -r .commit.author.email)
 
-          echo "Name: $NAME"
-          echo "Email: $EMAIL"
+          echo "Author Name: $AUTHOR_NAME"
+          echo "Author Email: $AUTHOR_EMAIL"
+          echo "Version: $VERSION"
 
-          echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+          echo "author_name=$AUTHOR_NAME" >> $GITHUB_OUTPUT
+          echo "author_email=$AUTHOR_EMAIL" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Say Hi
         run: |
-          echo "We are about to release: ${{ steps.extract_release_version.outputs.release_version }}"
+          echo "We are about to release: ${{ steps.release_info.outputs.version }}"
 
       - name: Update Workspace Dependencies
         run: |
@@ -48,7 +52,7 @@ jobs:
 
       - name: Set Workspace Version
         run: |
-          sed -i "s/^version = \".*\"/version = \"${{ steps.extract_release_version.outputs.release_version }}\"/" Cargo.toml
+          sed -i "s/^version = \".*\"/version = \"${{ steps.release_info.outputs.version }}\"/" Cargo.toml
 
       - name: Run Tests
         run: |
@@ -56,10 +60,12 @@ jobs:
 
       - name: Commit Changes
         run: |
-          git checkout -b releases/rs/v${{ steps.extract_release_version.outputs.release_version }}
+          git config --global user.name "${{ steps.release_info.outputs.author_name }}"
+          git config --global user.email "${{ steps.release_info.outputs.author_email }}"
+          git checkout -b releases/rs/v${{ steps.release_info.outputs.version }}
           git add Cargo.toml
           git add Cargo.lock
-          git commit -m "build: update version to v${{ steps.extract_release_version.outputs.release_version }}"
-          git push origin releases/rs/v${{ steps.extract_release_version.outputs.release_version }}
+          git commit -m "build: update version to v${{ steps.release_info.outputs.version }}"
+          git push origin releases/rs/v${{ steps.release_info.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
