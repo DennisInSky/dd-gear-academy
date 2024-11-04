@@ -1,12 +1,14 @@
 name: Release (Rust)
 
 on:
-  release:
-    types: [published]
+#   release:
+#     types: [published]
+    push:
+        tags:
+        - 'rs/v*'
 
 jobs:
   j1:
-    if: startsWith(github.ref, 'refs/tags/rs/v')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -17,4 +19,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Say Hi
-        run: echo "Hello, World!"
+        run: |
+          echo "Hello, World!"
+          RELEASE_TAG=${GITHUB_REF#refs/tags/}
+          echo "RELEASE_TAG: $RELEASE_TAG"
