@@ -26,10 +26,30 @@ jobs:
             echo "'$VERSION' is not a valid semver version"
             exit 1
           fi
-          echo "Release Version: $RELEASE_VERSION"
-          echo "::set-output name=release_version::$RELEASE_VERSION"
+          echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
 
       - name: Say Hi
         run: |
-          echo "Hello, World!"
           echo "We are about to release: ${{ steps.extract_release_version.outputs.release_version }}"
+
+      - name: Update Workspace Dependencies
+        run: |
+          cargo update
+
+      - name: Set Workspace Version
+        run: |
+          sed -i "s/^version = \".*\"/version = \"${{ steps.extract_release_version.outputs.release_version }}\"/" Cargo.toml
+
+      - name: Run Tests
+        run: |
+          cargo test
+
+      - name: Commit Changes
+        run: |
+          git checkout -b releases/rs/v${{ steps.extract_release_version.outputs.release_version }}
+          git add Cargo.toml
+          git add Cargo.lock
+          git commit -m "build: update version to v${{ steps.extract_release_version.outputs.release_version }}"
+          git push origin releases/rs/v${{ steps.extract_release_version.outputs.release_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
