@@ -1,0 +1,19 @@
+name: Release (Rust)
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  j1:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Say Hi
+        run: echo "Hello, World!"
