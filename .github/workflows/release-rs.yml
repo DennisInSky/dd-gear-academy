@@ -1,14 +1,13 @@
 name: Release (Rust)
 
 on:
-#   release:
-#     types: [published]
-    push:
-        tags:
-        - 'rs/v*'
+  push:
+    tags:
+      - 'rs/v*'
 
 jobs:
-  j1:
+  release:
+    name: Release
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -18,8 +17,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Extract Release Version
+        id: extract_release_version
+        run: |
+          RELEASE_TAG=${GITHUB_REF#refs/tags/}
+          RELEASE_VERSION=${RELEASE_TAG#rs/v}
+          if [[ ! $RELEASE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "'$VERSION' is not a valid semver version"
+            exit 1
+          fi
+          echo "Release Version: $RELEASE_VERSION"
+          echo "::set-output name=release_version::$RELEASE_VERSION"
+
       - name: Say Hi
         run: |
           echo "Hello, World!"
-          RELEASE_TAG=${GITHUB_REF#refs/tags/}
-          echo "RELEASE_TAG: $RELEASE_TAG"
+          echo "We are about to release: ${{ steps.extract_release_version.outputs.release_version }}"
