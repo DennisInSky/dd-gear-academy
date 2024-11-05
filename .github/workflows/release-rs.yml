@@ -59,6 +59,7 @@ jobs:
 
       - name: Run Tests
         run: |
+          cargo build
           cargo test
           ls -l target/debug/hello
 
