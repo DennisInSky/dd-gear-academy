@@ -61,7 +61,6 @@ jobs:
         run: |
           cargo build
           cargo test
-          ls -l target/debug/hello
 
       - name: Commit Changes
         run: |
@@ -78,15 +77,14 @@ jobs:
           git push origin "$RC_BRANCH"
           git tag "$R_TAG"
           git push origin "$R_TAG"
-          git push --delete origin "${GITHUB_REF#refs/tags/}"
+          git push origin --delete "${GITHUB_REF#refs/tags/}"
           #git checkout main
           #git merge --squash "$RC_BRANCH"
           #git commit -m "chore: sync release v${{ steps.release_info.outputs.version }}"
           #git push origin main
-          #git checkout "$R_TAG"
-          #git branch -d "$RC_BRANCH"
-          #git push origin --delete "$RC_BRANCH"
-          ls -l target/debug/hello
+          git checkout "$R_TAG"
+          git branch -d "$RC_BRANCH"
+          git push origin --delete "$RC_BRANCH"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -99,6 +97,6 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             Cargo.toml
-            ./target/debug/hello
+            target/debug/hello
           draft: true
           token: ${{ secrets.GITHUB_TOKEN }}
