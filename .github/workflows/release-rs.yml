@@ -3,7 +3,7 @@ name: Release (Rust)
 on:
   push:
     tags:
-      - 'rs/v*'
+      - 'rs/v*-rc'
 
 jobs:
   release:
@@ -62,8 +62,10 @@ jobs:
 
       - name: Commit Changes
         run: |
-          git config --global user.name "${{ steps.release_info.outputs.author_name }}"
-          git config --global user.email "${{ steps.release_info.outputs.author_email }}"
+          #git config --global user.name "${{ steps.release_info.outputs.author_name }}"
+          #git config --global user.email "${{ steps.release_info.outputs.author_email }}"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b releases/rs/v${{ steps.release_info.outputs.version }}
           git add Cargo.toml
           git add Cargo.lock
