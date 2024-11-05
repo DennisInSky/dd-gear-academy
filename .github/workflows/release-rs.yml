@@ -81,8 +81,8 @@ jobs:
           #git merge --squash "$RC_BRANCH"
           #git commit -m "chore: sync release v${{ steps.release_info.outputs.version }}"
           #git push origin main
-          git checkout "$R_TAG"
-          git branch -d "$RC_BRANCH"
-          git push origin --delete "$RC_BRANCH"
+          #git checkout "$R_TAG"
+          #git branch -d "$RC_BRANCH"
+          #git push origin --delete "$RC_BRANCH"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
