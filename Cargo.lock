@@ -4,11 +4,11 @@ version = 3
 
 [[package]]
 name = "dd-lib"
-version = "0.6.2"
+version = "0.6.200"
 
 [[package]]
 name = "hello"
-version = "0.6.2"
+version = "0.6.200"
 dependencies = [
  "dd-lib",
 ]
