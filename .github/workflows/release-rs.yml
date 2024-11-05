@@ -86,3 +86,15 @@ jobs:
           #git push origin --delete "$RC_BRANCH"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release v${{ steps.release_info.outputs.version }} (Rust)
+          tag_name: rs/v${{ steps.release_info.outputs.version }}
+          generate_release_notes: true
+          files: |
+            Cargo.toml
+            target/debug/hello
+          draft: true
+          token: ${{ secrets.GITHUB_TOKEN }}
