@@ -75,6 +75,7 @@ jobs:
           git push origin "$RC_BRANCH"
           git tag rs/v${{ steps.release_info.outputs.version }}
           git push origin rs/v${{ steps.release_info.outputs.version }}
+          git tag -d "${GITHUB_REF#refs/tags/}"
           git push --delete origin "${GITHUB_REF#refs/tags/}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
